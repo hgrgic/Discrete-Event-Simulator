@@ -35,8 +35,10 @@ class ApplicationServer:
         self.attached_disks[disk.disk_name] = disk
 
     def record_trnsaction(self, number_of_transactions):
+        # TODO: define business logic
         return -1
 
     def get_available_resources(self):
+        # TODO: define business logic
         return -1
 
