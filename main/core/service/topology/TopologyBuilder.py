@@ -1,4 +1,4 @@
-from main.core.model.exceptions.NoSuchTopologyElementException import NoSuchTopologyElementException
+from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
 from main.core.model.topology.servers.ApplicationServer import ApplicationServer
 from main.core.model.topology.servers.DatabaseServer import DatabaseServer
 
@@ -24,6 +24,6 @@ class TopologyBuilder:
                     _db_server.attach_disks(db_server['disks'])
                     _topology_elements[element].append(_db_server)
             else:
-                raise NoSuchTopologyElementException("Element '%s' is not part of the predefined topology set." % element)
+                raise NoSuchElementException("Element '%s' is not part of the predefined topology set." % element)
 
         return _topology_elements

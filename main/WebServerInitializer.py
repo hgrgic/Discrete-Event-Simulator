@@ -6,7 +6,6 @@ from main.core.web.controller.ConfigurationController import ConfigurationContro
 app = Flask(__name__)
 api = Api(app)
 
-
 api.add_resource(ConfigurationController, '/config')
 
 if __name__ == '__main__':
