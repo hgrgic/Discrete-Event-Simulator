@@ -7,8 +7,10 @@ from main.core.model.exceptions.request.ProportionOverloadException import Propo
 from main.core.service.operations.Event import Event
 from main.core.util.StatUtility import get_gamma_dist, get_norm_dist, get_binomial_dist
 
+import simpy
 
-class ScenarioBuilder:
+
+class SimulationBuilder:
 
     def __init__(self) -> None:
         super().__init__()
@@ -42,6 +44,10 @@ class ScenarioBuilder:
             raise NoSuchElementException("Key %s is missing or has not been properly defined." % ke)
 
 
+    def get_sim_environment(self):
+        env = simpy.Environment()
+        return env
+
     def _build_events_list(self, prototype, proportion):
         local_budget = round(self.simulation_budget * proportion)
         error_bin_dist = get_binomial_dist(local_budget, prototype['error_proportion'])
@@ -59,4 +65,4 @@ class ScenarioBuilder:
         for i in range(len(self.events)):
             self.events[i].set_size(self.simulation_dist[i])
 
-        return {"simulation_duration_days": self.simulation_duration, "simulation_events": self.events}
+        return {"simulation_duration_days": self.simulation_duration, "workload": self.events}

@@ -7,9 +7,10 @@ class TopologyManager:
         super().__init__()
         self.topology = topology
 
-    def process_event(self, event:Event):
+    def process_event(self, env, event:Event):
         # TODO: define business logic
-        return -1
+        # TODO: pass event to correct topology elements
+        yield env.timeout(1)
 
     def add_topology_component(self, toplogy_element):
         # TODO: define business logic

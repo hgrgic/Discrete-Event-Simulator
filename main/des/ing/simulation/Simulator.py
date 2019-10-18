@@ -1,22 +1,20 @@
-import simpy
-from main.core.service.operations.ProcessManager import ProcessManager
+from main.core.service.topology.ToplogyManager import TopologyManager
 
 
 class Simulator(object):
-    def __init__(self, env, total_workload, process_manager: ProcessManager):
-        self.env = env
-        self.total_workload = total_workload
-        self._process_manager = process_manager
+    def __init__(self, _env, _scenario, _topology_manager: TopologyManager):
+        self.env = _env
+        self.duration = _scenario['simulation_duration_days']
+        self.workload = _scenario['workload']
+        self.topology_manager = _topology_manager
+        # Start the run process every time an instance is created.
+        self.action = _env.process(self._run())
 
-        # Start the run process everytime an instance is created.
-        self.action = env.process(self.run_simulator())
+    def start_simulation(self):
+        self.env.run(until=self.duration)
 
-    def run_simulator(self):
+    def _run(self):
         while True:
-            print(f'Time: {self.env.now}')
-            # workload_sample = random.choice(self.total_workload) #altering #TODO: replace with some values from JSON
-            # print(f"Total workload: {workload_sample}") ### server part
-            # We yield the process that process() returns
-            # to wait for it to finish
-            #yield self.env.process(self.server(workload_sample)) ### remove this part
-            yield self._process_manager.process_event(-1,-1)
+            for event in self.workload:
+                print(f'Time: {self.env.now}')
+                yield self.env.process(self.topology_manager.process_event(self.env, event))
