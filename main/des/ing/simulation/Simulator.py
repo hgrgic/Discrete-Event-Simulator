@@ -7,10 +7,13 @@ class Simulator(object):
         self.duration = _scenario['simulation_duration_days']
         self.workload = _scenario['workload']
         self.topology_manager = _topology_manager
+        self.runtime_id = None
+
         # Start the run process every time an instance is created.
         self.action = _env.process(self._run())
 
-    def start_simulation(self):
+    def start_simulation(self, runtime_id):
+        self.runtime_id = runtime_id
         self.env.run(until=self.duration)
 
     def _run(self):
