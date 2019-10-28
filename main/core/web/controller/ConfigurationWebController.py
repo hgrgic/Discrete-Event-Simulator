@@ -3,7 +3,7 @@ from flask import request, abort, make_response, jsonify
 
 from main.core.model.exceptions.BadRequestExceptions import BadRequestException
 from main.core.model.exceptions.InternalExceptions import InternalException
-from main.core.service.infrastructure.SimulationBuilder import SimulationBuilder
+from main.core.service.infrastructure.ScenarioBuilder import ScenarioBuilder
 from main.core.service.operations.OperationsController import OperationsController
 from main.core.service.operations.ToplogyManager import TopologyManager
 from main.core.service.infrastructure.TopologyBuilder import TopologyBuilder
@@ -20,7 +20,7 @@ class ConfigurationWebController(Resource):
             topology_manager = TopologyManager(topology)
 
             # Parsing simulation scenario
-            sb = SimulationBuilder()
+            sb = ScenarioBuilder()
             scenario = sb.instantiate_scenario(request.json['scenario'])
             sim_env = sb.get_sim_environment()
 

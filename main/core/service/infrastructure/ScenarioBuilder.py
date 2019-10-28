@@ -10,7 +10,7 @@ from main.core.util.StatUtility import get_gamma_dist, get_norm_dist, get_binomi
 import simpy
 
 
-class SimulationBuilder:
+class ScenarioBuilder:
 
     def __init__(self) -> None:
         super().__init__()
