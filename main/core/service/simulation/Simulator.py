@@ -17,7 +17,11 @@ class Simulator(object):
         self.env.run(until=self.duration)
 
     def _run(self):
+        from main.core.service.operations.OperationsController import OperationsController
+        oc = OperationsController.get_instance()
         while True:
             for event in self.workload:
                 print(f'Time: {self.env.now}')
-                yield self.env.process(self.topology_manager.process_event(self.env, event))
+                snap = yield self.env.process(self.topology_manager.process_event(self.env, event))
+                oc.get_simulation_report(self.runtime_id).append_snapshot(snap)
+                # TODO: close simulation after completed

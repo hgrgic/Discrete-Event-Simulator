@@ -1,3 +1,4 @@
+from main.core.model.simulation.State import State
 from main.core.model.topology.components.Cpu import Cpu
 from main.core.model.topology.components.Disk import Disk
 
@@ -6,6 +7,7 @@ class ApplicationServer:
 
     def __init__(self, server_name):
         self.server_name = server_name
+        self.entity_type = "APP_SERVER"
 
         self.cumulative_cpu_units = 0
         self.cumulative_disk_units = 0
@@ -42,3 +44,12 @@ class ApplicationServer:
         # TODO: define business logic
         return -1
 
+    def get_state(self, parent_entity=None) -> State:
+        dependent_states = []
+        for cpu in self.attached_cpus.values():
+            dependent_states.append(cpu.get_state(self.server_name))
+
+        for disk in self.attached_disks.values():
+            dependent_states.append(disk.get_state(self.server_name))
+
+        return State(self.server_name, self.entity_type, None, None, dependent_states=dependent_states)
