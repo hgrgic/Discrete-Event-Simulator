@@ -1,2 +1,0 @@
-class CriticalIncidentException(Exception):
-    pass
