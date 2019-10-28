@@ -5,7 +5,7 @@ import datetime
 from main.core.model.exceptions.internal.SingletonClassException import SingletonClassException
 from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
 from main.core.util.IdentityUtility import get_unique_id
-from main.des.ing.simulation.Simulator import Simulator
+from main.core.service.simulation.Simulator import Simulator
 
 
 class OperationsController:

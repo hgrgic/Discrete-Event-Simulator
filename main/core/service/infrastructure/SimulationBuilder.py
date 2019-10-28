@@ -4,7 +4,7 @@ from main.core.model.exceptions.internal.SetupException import SetupException
 from main.core.model.exceptions.request.ConfigurationSetupMismatch import ConfigurationSetupMismatch
 from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
 from main.core.model.exceptions.request.ProportionOverloadException import ProportionOverloadException
-from main.core.service.operations.Event import Event
+from main.core.model.simulation.Event import Event
 from main.core.util.StatUtility import get_gamma_dist, get_norm_dist, get_binomial_dist
 
 import simpy

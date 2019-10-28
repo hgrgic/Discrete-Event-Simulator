@@ -1,4 +1,4 @@
-from main.core.service.topology.ToplogyManager import TopologyManager
+from main.core.service.operations.ToplogyManager import TopologyManager
 
 
 class Simulator(object):
