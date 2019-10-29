@@ -57,18 +57,7 @@ class OperationsController:
     def get_running_simulation(self, runtime_id):
         if self.__instance is not None:
             if runtime_id in self.__instance.__running_simulations:
-                _simulation = self.__instance.__running_simulations[runtime_id]
-                return {"runtime_id": runtime_id, "start_time": _simulation["start_time"]}
-            else:
-                raise NoSuchElementException("Element with runtime_id '%s' not found!" % runtime_id)
-        else:
-            raise SingletonClassException("Singleton not instantiated")
-
-    def get_simulation_report(self, runtime_id):
-        if self.__instance is not None:
-            if runtime_id in self.__instance.__running_simulations:
-                _simulation = self.__instance.__running_simulations[runtime_id]
-                return _simulation['report']
+                return self.__instance.__running_simulations[runtime_id]
             else:
                 raise NoSuchElementException("Element with runtime_id '%s' not found!" % runtime_id)
         else:

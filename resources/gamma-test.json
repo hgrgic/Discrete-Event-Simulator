@@ -1,4 +1,6 @@
 {
+  "name": "Gamma Simulation",
+  "description": "Some simulation description 1",
   "topology": {
     "application-servers": [
       {

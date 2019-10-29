@@ -1,6 +1,5 @@
 import random
 
-from main.core.model.exceptions.internal.SetupException import SetupException
 from main.core.model.exceptions.request.ConfigurationSetupMismatch import ConfigurationSetupMismatch
 from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
 from main.core.model.exceptions.request.ProportionOverloadException import ProportionOverloadException
@@ -60,7 +59,7 @@ class ScenarioBuilder:
     def _export_sim_scenario(self):
         random.shuffle(self.events)
         if len(self.events) != len(self.simulation_dist):
-            raise SetupException("Length mismatch between defined events and assigned distribution")
+            raise ConfigurationSetupMismatch("Length mismatch between defined events and assigned distribution")
 
         for i in range(len(self.events)):
             self.events[i].set_size(self.simulation_dist[i])

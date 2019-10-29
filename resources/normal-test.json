@@ -1,4 +1,6 @@
 {
+  "name": "Norm Simulation",
+  "description": "Some simulation description 2",
   "topology": {
     "application-servers": [
       {
