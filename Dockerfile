@@ -1,15 +1,15 @@
-FROM alpine:3.1
+FROM tiangolo/uwsgi-nginx-flask:python3.6-alpine3.7
 
 # Update
-RUN apk add --update python py-pip
-
-# Install app dependencies
-#RUN pip install -r ./requirements.txt
+#RUN apk add --update add python py-pip
+#RUN apk --update add bash nano python
 
 # Bundle app source
 COPY ./main/* /main/
-COPY ./ServerInitializer.py /ServerInitializer.py
 COPY ./index.html /index.html
+COPY ./requirements.txt /requirements.txt
 
+# Install app dependencies
+RUN pip install -r /requirements.txt
 
-CMD ["python", "ServerInitializer.py"]
+#CMD ["python", "/main/WebServerInitializer.py"]
