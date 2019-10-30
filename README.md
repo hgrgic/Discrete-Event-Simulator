@@ -1,5 +1,21 @@
 # Discrete Event Simulator
 
+## Project Setup
+## Requirements
+In order to start the project necessary dependencies are:
+
+* Flask (with its Restful components)
+* Simpy
+* Mongo
+* Potentially other minors depending on the custom Python setup
+
+### Environment variables
+1. Mongo DataBase:
+ * MONGO_USER='some_username'
+ * MONGO_PASS='some_password'
+ * MONGO_HOST='some_host'
+ * MONGO_PORT='some_port'
+ * MONGO_DB_NAME='some_db'
 
 ## Contributions
 ### General
