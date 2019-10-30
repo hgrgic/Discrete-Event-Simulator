@@ -11,6 +11,7 @@ from main.core.service.operations.OperationsController import OperationsControll
 from main.core.service.operations.ToplogyManager import TopologyController
 from main.core.service.infrastructure.TopologyBuilder import TopologyBuilder
 from main.core.service.simulation.Simulator import Simulator
+from main.core.util.IdentityUtility import get_unique_id
 
 
 class ConfigurationWebController(Resource):
@@ -32,10 +33,11 @@ class ConfigurationWebController(Resource):
 
             # Register and start simulation
             oc = OperationsController.get_instance()
-            thread = Thread(target=oc.register_simulation, args=(simulator,))
+            runtime_id = get_unique_id()
+            thread = Thread(target=oc.register_simulation, args=(simulator, runtime_id,))
             thread.start()
 
-            return make_response(jsonify({"success": "Simulation created"}), 201)
+            return make_response(jsonify({"success": "Simulation created", "runtime_id": runtime_id}), 201)
 
         except BadRequestException as bre:
             abort(400, {"error": bre.args})

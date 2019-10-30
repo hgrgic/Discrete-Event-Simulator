@@ -5,7 +5,6 @@ import datetime
 from main.core.model.exceptions.internal.SingletonClassException import SingletonClassException
 from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
 from main.core.model.simulation.SimulationReport import SimulationReport
-from main.core.util.IdentityUtility import get_unique_id
 from main.core.service.simulation.Simulator import Simulator
 
 
@@ -25,9 +24,8 @@ class OperationsController:
             OperationsController()
         return OperationsController.__instance
 
-    def register_simulation(self, simulation: Simulator):
+    def register_simulation(self, simulation: Simulator, runtime_id):
         if self.__instance is not None:
-            runtime_id = get_unique_id()
             self.__instance.__running_simulations[runtime_id] = {
                 'start_time': datetime.datetime.now(),
                 "simulation": simulation,
