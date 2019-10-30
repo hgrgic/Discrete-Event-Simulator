@@ -1,9 +1,9 @@
-from main.core.model.simulation.SystemSnapshot import SystemSnapshot
+import jsonpickle
+import json
 
 
 class SimulationReport:
     def __init__(self) -> None:
-        super().__init__()
         self.snapshots = []
 
     def append_snapshot(self, system_snapshot):
@@ -18,7 +18,8 @@ class SimulationReport:
         return document
 
     def save_report(self, runtime_id, collection):
-        document = {"runtime_id": runtime_id, "report": self.snapshots}
+        document = dict(runtime_id=runtime_id, snapshots=self.snapshots)
+        document = json.loads(jsonpickle.encode(document, make_refs=False)) #encoding object to JSON
         result = collection.insert_one(document)
         return result.inserted_id
 
