@@ -14,3 +14,7 @@ def get_gamma_dist(_size, _a):
 
 def get_binomial_dist(_size, probability, options=1):
     return np.random.binomial(options, probability, _size)
+
+
+def get_poisson_dist(_size, _center):
+    return np.random.poisson(_center, _size)

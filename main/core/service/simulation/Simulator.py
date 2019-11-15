@@ -24,4 +24,5 @@ class Simulator(object):
                 print(f'Time: {self.env.now}')
                 snap = yield self.env.process(self.topology_controller.process_event(self.env, event))
                 oc.get_running_simulation(self.runtime_id)['report'].append_snapshot(snap)
+
                 # TODO: close simulation after completed
