@@ -1,4 +1,3 @@
-from multiprocessing import Process
 from threading import Thread
 
 from flask_restful import Resource

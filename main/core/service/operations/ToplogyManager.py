@@ -1,6 +1,3 @@
-from main.core.model.simulation import Event
-from main.core.model.simulation.SystemSnapshot import SystemSnapshot
-
 
 class TopologyController:
 
@@ -8,20 +5,22 @@ class TopologyController:
         super().__init__()
         self.topology = topology
 
-    def process_event(self, env, event: Event):
-        # TODO: define business logic
-        # TODO: pass event to correct topology elements
-        snapshot = SystemSnapshot(self._get_system_snapshot(self.topology))  # after event execution, take snapshot
-        yield env.timeout(1)
-        return snapshot
-
-    def process_events(self, env, events: []):
-        snaps = []
+    def process_event(self, env, events, step):
         for event in events:
-            # TODO: execute event
-            snaps.append(SystemSnapshot(self._get_system_snapshot(self.topology)))  # after event execution, take snapshot
-        yield env.timeout(1)
-        return snaps
+            optimal_server = None
+            for idx in range(len(self.topology.get('application-servers'))):  # find optimal app server
+                server = self.topology.get('application-servers')[idx]
+                if idx == 0:
+                    optimal_server = server
+                else:
+                    if server.get_resources()[1].get('cpu') < optimal_server.get_resources()[1].get('cpu'):
+                        optimal_server = server
+
+                env.process(optimal_server.execute_event(event))
+
+        yield env.timeout(step)
+        # snapshot = SystemSnapshot(self._get_system_snapshot(self.topology))  # after event execution, take snapshot #TODO: implement as part of reporting
+        # return snapshot
 
     def _get_system_snapshot(self, entities):
         states = []

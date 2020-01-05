@@ -1,40 +1,36 @@
+import simpy
+
+from main.core.model.simulation import Event
 from main.core.model.simulation.State import State
-from main.core.model.topology.components.Disk import Disk
 
 
 class DatabaseServer:
 
-    def __init__(self, server_name, sim_env):
+    def __init__(self, server_name, sim_env, disk_units):
         self.server_name = server_name
         self.entity_type = "DB_SERVER"
         self.sim_env = sim_env
+        self.disk_units = simpy.Resource(sim_env, capacity=disk_units)
 
-        self.cumulative_disk_units = 0
-        self.available_disk_units = 0
-        self.attached_disks = dict()
+    def execute(self, event: Event):
+        with self.disk_units.request() as disk_req:  # EVENT NOT USED!!!
+            yield disk_req
+            yield self.sim_env.timeout(1)
 
-    def attach_disks(self, disks):
-        for disk in disks:
-            _disk = Disk(disk['name'], disk['units'], self.sim_env)
-            self.attach_disk(_disk)
-
-    def attach_disk(self, disk: Disk):
-        self.cumulative_disk_units += disk.max_disk_units
-        self.available_disk_units += disk.available_disk_units.count
-        self.attached_disks[disk.disk_name] = disk
-
-    def store_transaction(self, transaction):
-        # TODO: define business logic
-        return -1
-
-    def get_available_resources(self):
-        # TODO: define business logic
-        return -1
+    def get_resources(self):
+        """
+        Tuple returning as the first value the count of currently processing units
+        as second value the len of the queue
+        """
+        processing = {'disk': self.disk_units.count}
+        in_queue = {'disk': len(self.disk_units.queue)}
+        return processing, in_queue
 
     def get_state(self, parent_entity=None) -> State:
-        dependent_states = []
-        for disk in self.attached_disks.values():
-            dependent_states.append(disk.get_state(self.server_name))
-
-        return State(self.server_name, self.entity_type,
-                     self.cumulative_disk_units, self.available_disk_units, dependent_states=dependent_states)
+        return None
+        # dependent_states = []
+        # for disk in self.attached_disks.values():
+        #     dependent_states.append(disk.get_state(self.server_name))
+        #
+        # return State(self.server_name, self.entity_type,
+        #              self.cumulative_disk_units, self.available_disk_units, dependent_states=dependent_states)

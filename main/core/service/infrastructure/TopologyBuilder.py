@@ -17,14 +17,12 @@ class TopologyBuilder:
 
             if element == APP_SERVERS:
                 for app_server in elements[element]:
-                    _app_server = ApplicationServer(app_server['name'], sim_env)
-                    _app_server.attach_cpus(app_server['cpus'])
-                    _app_server.attach_disks(app_server['disks'])
+                    _app_server = ApplicationServer(app_server['name'], sim_env,
+                                                    app_server['cpu_units'], app_server['memory_units'])
                     _topology_elements[element].append(_app_server)
             elif element == DB_SERVERS:
                 for db_server in elements[element]:
-                    _db_server = DatabaseServer(db_server['name'], sim_env)
-                    _db_server.attach_disks(db_server['disks'])
+                    _db_server = DatabaseServer(db_server['name'], sim_env, db_server['disk_units'])
                     _topology_elements[element].append(_db_server)
             else:
                 raise NoSuchElementException("Element '%s' is not part of the predefined topology set." % element)

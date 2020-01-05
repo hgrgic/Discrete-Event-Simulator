@@ -1,56 +1,44 @@
+import simpy
+
+from main.core.model.simulation import Event
 from main.core.model.simulation.State import State
-from main.core.model.topology.components.Cpu import Cpu
-from main.core.model.topology.components.Disk import Disk
 
 
 class ApplicationServer:
 
-    def __init__(self, server_name, sim_env):
+    def __init__(self, server_name, sim_env, cpu_units, memory_units):
         self.server_name = server_name
         self.entity_type = "APP_SERVER"
         self.sim_env = sim_env
 
-        self.cumulative_cpu_units = 0
-        self.cumulative_disk_units = 0
-        self.available_disk_units = 0
-        self.available_cpu_units = 0
-        self.attached_disks = dict()
-        self.attached_cpus = dict()
+        self.cpu_units = simpy.Resource(sim_env, capacity=cpu_units)
+        self.memory_units = simpy.Resource(sim_env, capacity=memory_units)
 
-    def attach_cpus(self, cpus):
-        for cpu in cpus:
-            _cpu = Cpu(cpu['name'], cpu['units'], self.sim_env)
-            self.attach_cpu(_cpu)
+    def execute_event(self, event: Event):
+        with self.cpu_units.request() as cpu_req:  # EVENT NOT USED, MEMORY NOT USED!!!
+            self.print_cpu_stats()
+            yield cpu_req
+            yield self.sim_env.timeout(1)
 
-    def attach_disks(self, disks):
-        for disk in disks:
-            _disk = Disk(disk['name'], disk['units'], self.sim_env)
-            self.attach_disk(_disk)
+    def get_resources(self):
+        """
+        Tuple returning as the first value the count of currently processing units
+        as second value the len of the queue
+        """
+        processing = {'cpu': self.cpu_units.count, 'memory': self.memory_units.count}
+        queue = {'cpu': len(self.cpu_units.queue), 'memory': len(self.memory_units.queue)}
+        return processing, queue
 
-    def attach_cpu(self, cpu: Cpu):
-        self.cumulative_cpu_units += cpu.max_cpu_units
-        self.available_cpu_units += cpu.available_cpu_units.count #adapt to reflect count
-        self.attached_cpus[cpu.cpu_name] = cpu
+    def print_cpu_stats(self):
+        print('%d of %d CPU slots are allocated.' % (self.cpu_units.count, self.cpu_units.capacity))
+        print('  Users:', self.cpu_units.users)
+        print('  Queued events:', self.cpu_units.queue)
 
-    def attach_disk(self, disk: Disk):
-        self.cumulative_disk_units += disk.max_disk_units
-        self.available_disk_units += disk.available_disk_units.count #adapt to reflect count
-        self.attached_disks[disk.disk_name] = disk
-
-    def record_transaction(self, number_of_transactions):
-        # TODO: define business logic
-        return -1
-
-    def get_available_resources(self):
-        # TODO: define business logic
-        return -1
+    def print_memory_stats(self):
+        print('%d of %d MEMORY slots are allocated.' % (self.memory_units.count, self.memory_units.capacity))
+        print('  Users:', self.memory_units.users)
+        print('  Queued events:', self.memory_units.queue)
 
     def get_state(self, parent_entity=None) -> State:
-        dependent_states = []
-        for cpu in self.attached_cpus.values():
-            dependent_states.append(cpu.get_state(self.server_name))
-
-        for disk in self.attached_disks.values():
-            dependent_states.append(disk.get_state(self.server_name))
-
-        return State(self.server_name, self.entity_type, None, None, dependent_states=dependent_states)
+        return None
+    #     return State(self.server_name, self.entity_type, None, None, dependent_states=dependent_states)
