@@ -8,7 +8,7 @@ class TopologyController:
     def process_event(self, env, events, step):
         for event in events:
             optimal_server = None
-            for idx in range(len(self.topology.get('application-servers'))):  # find optimal app server
+            for idx in range(len(self.topology.get('application-servers'))):  # find optimal app server (does not work)
                 server = self.topology.get('application-servers')[idx]
                 if idx == 0:
                     optimal_server = server
@@ -18,7 +18,6 @@ class TopologyController:
 
                 env.process(optimal_server.execute_event(event))
 
-        yield env.timeout(step)
         # snapshot = SystemSnapshot(self._get_system_snapshot(self.topology))  # after event execution, take snapshot #TODO: implement as part of reporting
         # return snapshot
 

@@ -11,18 +11,15 @@ class Simulator(object):
 
     def start_simulation(self, runtime_id):
         self.runtime_id = runtime_id
-        self._run()
-        self.env.run()
 
-    def _run(self):
         from main.core.service.operations.OperationsController import OperationsController
         oc = OperationsController.get_instance()
 
         for step in self.workload:
-            print(f'Time: {self.env.now}, Step: {step}')
             step_events = self.workload[step]
             self.topology_controller.process_event(self.env, step_events, step)
-            # oc.get_running_simulation(self.runtime_id)['report'].append_snapshot(snap) #TODO: implement as part of reporting
+            # oc.get_running_simulation(self.runtime_id)['report'].append_snapshot(snap) # TODO: implement as part of reporting
 
-        print("Done")
+        self.env.run()
+
         oc.complete_simulation_runtime(self.runtime_id)

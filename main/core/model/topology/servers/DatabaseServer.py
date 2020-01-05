@@ -16,21 +16,21 @@ class DatabaseServer:
         with self.disk_units.request() as disk_req:  # EVENT NOT USED!!!
             yield disk_req
             yield self.sim_env.timeout(1)
+            self.debug_disk_stats()
 
     def get_resources(self):
         """
-        Tuple returning as the first value the count of currently processing units
-        as second value the len of the queue
+        Tuple returning as the first value the count of currently processing units as second value the len of the queue
         """
         processing = {'disk': self.disk_units.count}
         in_queue = {'disk': len(self.disk_units.queue)}
         return processing, in_queue
 
-    def get_state(self, parent_entity=None) -> State:
+    def debug_disk_stats(self):
+        print('%s - %d of %d DISK slots are allocated.' % (self.server_name, self.disk_units.count, self.disk_units.capacity))
+        print('\tTime:', self.sim_env.now)
+        print('\tUsers:', len(self.disk_units.users))
+        print('\tQueued events:', len(self.disk_units.queue))
+
+    def get_state(self) -> State:
         return None
-        # dependent_states = []
-        # for disk in self.attached_disks.values():
-        #     dependent_states.append(disk.get_state(self.server_name))
-        #
-        # return State(self.server_name, self.entity_type,
-        #              self.cumulative_disk_units, self.available_disk_units, dependent_states=dependent_states)
