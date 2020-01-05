@@ -1,13 +1,9 @@
 import random
 
-from main.core.model.exceptions.request.ConfigurationSetupMismatch import ConfigurationSetupMismatch
-from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
-from main.core.model.exceptions.request.ProportionOverloadException import ProportionOverloadException
-from main.core.model.simulation.Event import Event
-from main.core.util.StatUtility import get_gamma_dist, get_norm_dist, get_binomial_dist, get_poisson_dist
-import numpy as np
-
 import simpy
+
+from main.core.model.simulation.Event import Event
+from main.core.util.StatUtility import get_poisson_dist
 
 
 class ScenarioBuilder:
@@ -40,9 +36,9 @@ class ScenarioBuilder:
 
     def get_event_prototype(self, login_percentage):
         if random.uniform(0, 1) > login_percentage:
-            return Event("login", 0.001, False)
+            return Event("login", 0.001, False)  # login event prototype
         else:
-            return Event("transaction", 0.005, False)
+            return Event("transaction", 0.005, False)  # transaction event prototype
 
     def _export_sim_scenario(self):
         return {"simulation_duration_days": self.simulation_duration, "workload": self.events}

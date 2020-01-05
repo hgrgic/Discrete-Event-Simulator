@@ -18,15 +18,14 @@ class ConfigurationWebController(Resource):
 
     def post(self):
         try:
-            # Parsing topology elements
-            tb = TopologyBuilder()
-            topology = tb.instantiate_topology(request.json['topology'])
-            topology_controller = TopologyController(topology)
-
             # Parsing simulation scenario
             sb = ScenarioBuilder()
             scenario = sb.instantiate_scenario(request.json['scenario'])
             sim_env = sb.get_sim_environment()
+
+            # Parsing topology elements
+            topology = TopologyBuilder.instantiate_topology(request.json['topology'], sim_env)
+            topology_controller = TopologyController(topology)
 
             # Create simulation
             simulator = Simulator(sim_env, scenario, topology_controller)
