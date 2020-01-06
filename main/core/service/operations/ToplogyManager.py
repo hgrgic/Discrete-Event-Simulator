@@ -5,7 +5,7 @@ class TopologyController:
         super().__init__()
         self.topology = topology
 
-    def process_event(self, env, events, step):
+    def process_event(self, env, events):
         for event in events:
             optimal_server = None
             for idx in range(len(self.topology.get('application-servers'))):  # find optimal app server (does not work)

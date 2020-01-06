@@ -28,6 +28,8 @@ class OperationsController:
         if self.__instance is not None:
             self.__instance.__running_simulations[runtime_id] = {
                 'start_time': datetime.datetime.now(),
+                "name": simulation.name,
+                "description": simulation.description,
                 "simulation": simulation,
                 "report": SimulationReport()
             }
@@ -48,7 +50,15 @@ class OperationsController:
 
     def get_all_running_simulations(self):
         if self.__instance is not None:
-            return list(self.__instance.__running_simulations.keys())
+            in_process = []
+            for key in self.__instance.__running_simulations.keys():
+                in_process.append({
+                    "runtime_id": key,
+                    "name":self.__instance.__running_simulations[key]['name'],
+                    "description":self.__instance.__running_simulations[key]['description'],
+                    "start_time":self.__instance.__running_simulations[key]['start_time'],
+                })
+            return in_process
         else:
             raise SingletonClassException("Singleton not instantiated")
 
