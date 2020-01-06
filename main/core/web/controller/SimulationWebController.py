@@ -2,9 +2,11 @@ from threading import Thread
 
 from flask_restful import Resource
 from flask import request, abort, make_response, jsonify
+from flask_restful_swagger import swagger
 
 from main.core.model.exceptions.BadRequestExceptions import BadRequestException
 from main.core.model.exceptions.InternalExceptions import InternalException
+from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
 from main.core.service.infrastructure.ScenarioBuilder import ScenarioBuilder
 from main.core.service.operations.OperationsController import OperationsController
 from main.core.service.operations.ToplogyManager import TopologyController
@@ -13,12 +15,38 @@ from main.core.service.simulation.Simulator import Simulator
 from main.core.util.IdentityUtility import get_unique_id
 
 
-class SimulationController(Resource):
+class SimulationWebController(Resource):
 
+    @swagger.operation(
+        notes='delete a todo item by ID',
+        parameters=[
+            {
+                "name": "runtime_id",
+                "description": "Runtime ID of the respective simulation.",
+                "required": True,
+                "dataType": "String",
+                "paramType": "query"
+            }
+        ],
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Summary for respective running simulation."
+            },
+            {
+                "code": 404,
+                "message": "Error, No such element found."
+            },
+            {
+                "code": 400,
+                "message": "Error, Bad Request."
+            }
+        ]
+    )
     def get(self):
         try:
             oc = OperationsController.get_instance()
-            if request.args.get("runtime_id") is not None:  # get a single running simulation
+            if request.args.get("runtime_id") is not None:
                 runtime_id = request.args.get("runtime_id")
                 _simulation = oc.get_running_simulation(runtime_id)
                 return make_response(jsonify({
@@ -28,7 +56,9 @@ class SimulationController(Resource):
                     "description": _simulation["description"]
                 }), 200)
             else:
-                return make_response(jsonify({"in_process": oc.get_all_running_simulations()}), 200)  # get all  running simulations
+                abort(400, {"error": "Bad request, missing query param runtime_id."})
+        except NoSuchElementException as bre:
+            abort(404, {"error": bre.args})
         except BadRequestException as bre:
             abort(400, {"error": bre.args})
 
