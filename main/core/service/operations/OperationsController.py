@@ -26,6 +26,7 @@ class OperationsController:
 
     def register_simulation(self, simulation: Simulator, runtime_id):
         if self.__instance is not None:
+            start_time = datetime.datetime.now()
             self.__instance.__running_simulations[runtime_id] = {
                 'start_time': datetime.datetime.now(),
                 "name": simulation.name,
@@ -33,6 +34,7 @@ class OperationsController:
                 "simulation": simulation,
                 "report": SimulationReport()
             }
+            print(f"Simulation {runtime_id} started at {start_time}")
             simulation.start_simulation(runtime_id)
             return runtime_id
         else:
@@ -41,6 +43,8 @@ class OperationsController:
     def complete_simulation_runtime(self, runtime_id):
         if self.__instance is not None:
             if runtime_id in self.__instance.__running_simulations:
+                finish_time = datetime.datetime.now()
+                print(f"Simualtion {runtime_id} finished at {finish_time}")
                 # TODO: store to database finish time, results
                 del self.__instance.__running_simulations[runtime_id]
             else:

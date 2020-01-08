@@ -1,7 +1,9 @@
 import simpy
 
 from main.core.model.simulation import Event
-from main.core.model.simulation.State import State
+
+CPU_COMPONENT = 'cpu'
+MEMORY_COMPONENT = 'memory'
 
 
 class ApplicationServer:
@@ -11,35 +13,27 @@ class ApplicationServer:
         self.entity_type = "APP_SERVER"
         self.sim_env = sim_env
 
-        self.cpu_units = simpy.Resource(sim_env, capacity=cpu_units)
-        self.memory_units = simpy.Resource(sim_env, capacity=memory_units)
+        self.cpu_units = simpy.resources.container.Container(sim_env, capacity=cpu_units, init=0)
+        self.memory_units = simpy.resources.container.Container(sim_env, capacity=memory_units, init=0)
 
-    def execute_event(self, event: Event):
-        with self.cpu_units.request() as cpu_req:  # EVENT NOT USED, MEMORY NOT USED!!!
-            yield cpu_req
-            yield self.sim_env.timeout(1)
-            self.debug_cpu_stats()
+        self.states = {CPU_COMPONENT: [], MEMORY_COMPONENT: []}
 
+    def execute_event(self, event: Event, step):
+        yield self.sim_env.timeout(step)
+        self.cpu_units.put(event.weight)
+        yield self.sim_env.timeout(0)
+        self.record_state(CPU_COMPONENT, self.sim_env.now, self.cpu_units)  # recording CPU activity
+        self.record_state(MEMORY_COMPONENT, self.sim_env.now, self.memory_units)  # recording RAM activity
+        self.cpu_units.get(event.weight)
+
+    # TODO: refactor once multi CPU feature under development
     def get_resources(self):
         """
         Tuple returning as the first value the count of currently processing units, as second value the len of the queue
         """
-        processing = {'cpu': self.cpu_units.count, 'memory': self.memory_units.count}
-        queue = {'cpu': len(self.cpu_units.queue), 'memory': len(self.memory_units.queue)}
+        processing = {'cpu': 10, 'memory': 10}
+        queue = {'cpu': 10, 'memory': 10}
         return processing, queue
 
-    def debug_cpu_stats(self):
-        print('%s - %d of %d CPU slots are allocated.' % (self.server_name, self.cpu_units.count, self.cpu_units.capacity))
-        print('\tTime:', self.sim_env.now)
-        print('\tUsers:', len(self.cpu_units.users))
-        print('\tQueued events:', len(self.cpu_units.queue))
-
-    def debug_memory_stats(self):
-        print('%s - %d of %d MEMORY slots are allocated.' % (self.server_name, self.memory_units.count, self.memory_units.capacity))
-        print('\tTime:', self.sim_env.now)
-        print('\tUsers:', len(self.memory_units.users))
-        print('\tQueued events:', len(self.memory_units.queue))
-
-    def get_state(self) -> State:
-        return None
-    #     return State(self.server_name, self.entity_type, None, None, dependent_states=dependent_states)
+    def record_state(self, component, env_time, container):
+        self.states[component].append([env_time, round(container.level, 3), len(container.put_queue)])

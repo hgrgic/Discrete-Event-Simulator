@@ -1,11 +1,10 @@
-
 class TopologyController:
 
     def __init__(self, topology) -> None:
         super().__init__()
         self.topology = topology
 
-    def process_event(self, env, events):
+    def process_event(self, env, events, step):
         for event in events:
             optimal_server = None
             for idx in range(len(self.topology.get('application-servers'))):  # find optimal app server (does not work)
@@ -16,7 +15,10 @@ class TopologyController:
                     if server.get_resources()[1].get('cpu') < optimal_server.get_resources()[1].get('cpu'):
                         optimal_server = server
 
-                env.process(optimal_server.execute_event(event))
+                if optimal_server is not None:
+                    env.process(optimal_server.execute_event(event, step))
+                else:
+                    pass  # TODO: throw some exception
 
         # snapshot = SystemSnapshot(self._get_system_snapshot(self.topology))  # after event execution, take snapshot #TODO: implement as part of reporting
         # return snapshot

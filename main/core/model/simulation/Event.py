@@ -7,7 +7,6 @@ class Event:
         super().__init__()
         self.type = _type
         self.weight = _weight
-        self.size = 0
         self.raise_incident = _raise_incident
         self.next = _next
 
