@@ -1,24 +1,27 @@
 import simpy
 
 from main.core.model.simulation import Event
+from main.core.model.topology.Reportable import Reportable
 
 DISK_COMPONENT = 'disk'
 
 
-class DatabaseServer:
+class DatabaseServer(Reportable):
 
     def __init__(self, server_name, sim_env, disk_units):
+        super().__init__()
         self.server_name = server_name
         self.entity_type = "DB_SERVER"
         self.sim_env = sim_env
         self.disk_units = simpy.resources.container.Container(sim_env, capacity=disk_units, init=0)
-        self.states = {DISK_COMPONENT: []}
+
+        super().register_component(DISK_COMPONENT)
 
     def execute_event(self, event: Event, step):
         yield self.sim_env.timeout(step)
         self.disk_units.put(event.weight)
         yield self.sim_env.timeout(0)
-        self.record_state(DISK_COMPONENT, self.sim_env.now, self.cpu_units)
+        super().record_state(DISK_COMPONENT, self.sim_env.now, self.cpu_units)
         self.cpu_units.get(event.weight)
 
     # TODO: refactor once multi CPU feature under development
@@ -29,6 +32,3 @@ class DatabaseServer:
         processing = {'disk': 10}
         in_queue = {'disk': 10}
         return processing, in_queue
-
-    def record_state(self, component, env_time, container):
-        self.states[component].append([env_time, round(container.level, 3), len(container.put_queue)])

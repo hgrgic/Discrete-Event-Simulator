@@ -5,6 +5,8 @@ import datetime
 from main.core.model.exceptions.internal.SingletonClassException import SingletonClassException
 from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
 from main.core.model.simulation.SimulationReport import SimulationReport
+from main.core.service.infrastructure.ConfigurationConstants import REPORT_COLLECTION, REQUEST_AUTH
+from main.core.service.infrastructure.MongoAdapter import MongoAdapter
 from main.core.service.simulation.Simulator import Simulator
 
 
@@ -32,7 +34,6 @@ class OperationsController:
                 "name": simulation.name,
                 "description": simulation.description,
                 "simulation": simulation,
-                "report": SimulationReport()
             }
             print(f"Simulation {runtime_id} started at {start_time}")
             simulation.start_simulation(runtime_id)
@@ -40,12 +41,20 @@ class OperationsController:
         else:
             raise SingletonClassException("Singleton not instantiated")
 
-    def complete_simulation_runtime(self, runtime_id):
+    def complete_simulation_runtime(self, runtime_id, report: SimulationReport):
         if self.__instance is not None:
             if runtime_id in self.__instance.__running_simulations:
+                instance = self.__instance.__running_simulations[runtime_id]
                 finish_time = datetime.datetime.now()
-                print(f"Simualtion {runtime_id} finished at {finish_time}")
-                # TODO: store to database finish time, results
+
+                mongo = MongoAdapter(REQUEST_AUTH)
+                mongo.open_db_connection()
+                reports_collection = mongo.get_collection(REPORT_COLLECTION)
+
+                report.save_report(runtime_id, instance['name'], instance['description'], instance['start_time'],
+                                   finish_time, reports_collection)
+
+                print(f"Simulation {runtime_id} finished at {finish_time}")
                 del self.__instance.__running_simulations[runtime_id]
             else:
                 raise NoSuchElementException("Element with runtime_id '%s' not found!" % runtime_id)

@@ -1,3 +1,4 @@
+from main.core.model.simulation.SimulationReport import SimulationReport
 from main.core.service.operations.ToplogyManager import TopologyController
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -22,27 +23,28 @@ class Simulator(object):
         for step in self.workload:
             step_events = self.workload[step]
             self.topology_controller.process_event(self.env, step_events, step)
-            # oc.get_running_simulation(self.runtime_id)['report'].append_snapshot(snap) # TODO: implement as part of reporting
 
         self.env.run()
 
         debug_states(self.topology_controller.topology.get('application-servers')[0].states['cpu'])  # TODO: remove for production
 
-        oc.complete_simulation_runtime(self.runtime_id)
+        simulation_report = SimulationReport()
+        simulation_report.compile_report(self.topology_controller.topology)
+        oc.complete_simulation_runtime(self.runtime_id, simulation_report)
 
 
 def debug_states(data):
     data_frame = pd.DataFrame(data,
                               columns=["step", "cpu_usage", "cpu_queue"])
     data_frame = data_frame.groupby(["step"]).max()
-    data_frame.to_csv('rep.csv')
+    # data_frame.to_csv('rep.csv')
 
     plt.subplot(2, 1, 1)
     plt.plot(data_frame["cpu_usage"])
     plt.title("CPU_usage")
     plt.margins()
     plt.subplot(2, 1, 2)
-    plt.plot(data_frame["queue"])
+    plt.plot(data_frame["cpu_queue"])
     plt.title("Requests in queue")
     plt.subplots_adjust(hspace=0.5)
     plt.show()
