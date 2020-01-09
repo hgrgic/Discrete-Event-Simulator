@@ -36,9 +36,9 @@ class ScenarioBuilder:
 
     def get_event_prototype(self, login_percentage):
         if random.uniform(0, 1) > login_percentage:
-            return Event("login", 0.001, False)  # login event prototype
+            return Event("login", 0.001, False, 0.5)  # login event prototype
         else:
-            return Event("transaction", 0.005, False)  # transaction event prototype
+            return Event("transaction", 0.005, False, 1)  # transaction event prototype
 
     def _export_sim_scenario(self):
         return {"simulation_duration_days": self.simulation_duration, "workload": self.events}

@@ -24,10 +24,12 @@ class ApplicationServer(Reportable):
     def execute_event(self, event: Event, step):
         yield self.sim_env.timeout(step)
         self.cpu_units.put(event.weight)
+        self.memory_units.put(event.size)
         yield self.sim_env.timeout(0)
         super().record_state(CPU_COMPONENT, self.sim_env.now, self.cpu_units)  # recording CPU activity
         super().record_state(MEMORY_COMPONENT, self.sim_env.now, self.memory_units)  # recording RAM activity
         self.cpu_units.get(event.weight)
+        self.memory_units.get(event.size)
 
     # TODO: refactor once multi CPU feature under development
     def get_resources(self):

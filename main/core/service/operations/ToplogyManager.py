@@ -20,9 +20,6 @@ class TopologyController:
                 else:
                     pass  # TODO: throw some exception
 
-        # snapshot = SystemSnapshot(self._get_system_snapshot(self.topology))  # after event execution, take snapshot #TODO: implement as part of reporting
-        # return snapshot
-
     def _get_system_snapshot(self, entities):
         states = []
         for entity in entities:
