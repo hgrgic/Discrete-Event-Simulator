@@ -64,6 +64,16 @@ class SimulationWebController(Resource):
 
     @swagger.operation(
         notes='Creates new simulation.',
+        parameters=[
+            {
+                "name": "body",
+                "description": "Blueprint for new simulation.",
+                "required": True,
+                "allowMultiple": False,
+                "dataType": "Object",
+                "paramType": "body"
+            }
+        ],
         responseMessages=[
             {
                 "code": 200,
@@ -76,6 +86,10 @@ class SimulationWebController(Resource):
             {
                 "code": 400,
                 "message": "Error, Bad Request."
+            },
+            {
+                "code": 500,
+                "message": "Error, Internal Error."
             }
         ]
     )

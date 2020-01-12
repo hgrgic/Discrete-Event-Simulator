@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  ing.des.test:
+    ports:
+      - '8080:80'
+    container_name: ing.des.test
+    volumes:
+      - $PWD/app
+    image: ing.des.test
+    environment:
+      - 'MONGO_USER=user'
+      - 'MONGO_PASS=ergSm@e&EB@2PmSYG!'
+      - 'MONGO_HOST=78.47.131.57'
+      - 'MONGO_PORT=27017'
+      - 'MONGO_DB_NAME=ind-des'

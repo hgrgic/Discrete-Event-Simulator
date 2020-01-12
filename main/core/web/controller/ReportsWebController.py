@@ -1,12 +1,10 @@
-from flask import make_response, jsonify, request, abort, Response
-
+from flask import abort, Response
 from flask_restful import Resource
 from flask_restful_swagger import swagger
 
 from main.core.model.exceptions.BadRequestExceptions import BadRequestException
 from main.core.model.simulation.SimulationReport import SimulationReport
 from main.core.service.infrastructure.MongoAdapter import MongoAdapter
-from main.core.util.JSONEncoder import JSONEncoder
 
 
 class ReportsWebController(Resource):

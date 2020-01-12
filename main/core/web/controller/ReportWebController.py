@@ -1,5 +1,4 @@
-from flask import make_response, jsonify, request, abort, Response
-
+from flask import make_response, request, abort, Response
 from flask_restful import Resource
 from flask_restful_swagger import swagger
 
