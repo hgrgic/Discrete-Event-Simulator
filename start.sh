@@ -1,5 +1,5 @@
 #!/bin/bash
-app="docker.test.hg"
+app="ing.des.test"
 
 docker stop docker.test.hg
 docker rm docker.test.hg

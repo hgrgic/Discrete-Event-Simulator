@@ -18,7 +18,7 @@ from main.core.util.IdentityUtility import get_unique_id
 class SimulationWebController(Resource):
 
     @swagger.operation(
-        notes='delete a todo item by ID',
+        notes='gets info about running simulation',
         parameters=[
             {
                 "name": "runtime_id",
@@ -62,6 +62,23 @@ class SimulationWebController(Resource):
         except BadRequestException as bre:
             abort(400, {"error": bre.args})
 
+    @swagger.operation(
+        notes='Creates new simulation.',
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Summary for respective running simulation."
+            },
+            {
+                "code": 404,
+                "message": "Error, No such element found."
+            },
+            {
+                "code": 400,
+                "message": "Error, Bad Request."
+            }
+        ]
+    )
     def post(self):
         try:
             # Parsing simulation scenario

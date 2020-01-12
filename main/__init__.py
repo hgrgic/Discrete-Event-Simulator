@@ -1,8 +1,4 @@
 from flask import Flask
-app = Flask(__name__)
-
-from main import core
-
 from flask_restful import Api
 from flask_restful_swagger import swagger
 
@@ -11,6 +7,9 @@ from main.core.web.controller.ReportWebController import ReportWebController
 from main.core.web.controller.SimulationWebController import SimulationWebController
 from main.core.web.controller.SimulationsWebController import SimulationsWebController
 
+app = Flask(__name__)
+
+from main import core
 
 api = swagger.docs(Api(app), apiVersion='0.1',
                    description='ING Discrete Event Simulator',

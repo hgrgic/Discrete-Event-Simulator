@@ -11,8 +11,7 @@ app = Flask(__name__)
 
 api = swagger.docs(Api(app), apiVersion='0.1',
                    description='ING Discrete Event Simulator',
-                   api_spec_url='/docs',
-                   basePath='http://localhost:8080')
+                   api_spec_url='/docs')
 
 api.add_resource(SimulationWebController, '/simulation')
 api.add_resource(SimulationsWebController, '/simulations')
