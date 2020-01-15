@@ -20,7 +20,8 @@ class Simulator(object):
 
         for step in self.workload:
             step_events = self.workload[step]
-            self.topology_controller.process_event(self.env, step_events, step)
+            self.env.process(self.topology_controller.process_event(self.env, step_events, step))
+            # self.topology_controller.process_event(self.env, step_events, step)
 
         self.env.run()
 
