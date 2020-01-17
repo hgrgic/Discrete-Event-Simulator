@@ -17,8 +17,7 @@ class TopologyBuilder:
 
             if element == APP_SERVERS:
                 for app_server in elements[element]:
-                    _app_server = ApplicationServer(app_server['name'], sim_env,
-                                                    app_server['cpu_units'], app_server['memory_units'])
+                    _app_server = ApplicationServer(app_server['name'], sim_env, app_server['cpu_sizes'])
                     _topology_elements[element].append(_app_server)
             elif element == DB_SERVERS:
                 for db_server in elements[element]:

@@ -1,3 +1,4 @@
+pandas
 Flask==1.1.1
 Simpy==3.0.11
 flask-jsonpify==1.5.0
