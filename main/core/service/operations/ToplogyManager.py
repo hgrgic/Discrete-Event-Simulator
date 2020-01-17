@@ -9,35 +9,36 @@ class TopologyController:
         self.topology = topology
 
     def process_event(self, env, event):
-        optimal_server = self.topology.get('application-servers')[0]
-        # for event in events:
-        #     optimal_server = None
-        #     for idx in range(len(self.topology.get('application-servers'))):  # find optimal app server (does not work)
-        #         server = self.topology.get('application-servers')[idx]
-        #         if idx == 0:
-        #             optimal_server = server
-        #         else:
-        #             if server.get_resources().get('cpu') < optimal_server.get_resources().get('cpu'):
-        #                 optimal_server = server
+        yield env.timeout(event.interval_time)  # this yields a NEW event at its corresponding start step
 
-        if optimal_server is not None:
-            yield env.timeout(event.interval_time) # this yields a NEW event at its corresponding start step
+        optimal_server = None
+        optimal_cpu_index = None
+        optimal_cpu_container = None
 
-            cpu_index = optimal_server.get_optimal_cpu_index()
-            cpu_container = optimal_server.get_cpu_container(cpu_index)
+        for server in self.topology.get('application-servers'):
+            temp_optimal_server = server
+            temp_cpu_index = server.get_optimal_cpu_index()
+            temp_cpu_container = temp_optimal_server.get_cpu_container(temp_cpu_index)
 
-            print("Server:", optimal_server.server_name, "CPU:", str(cpu_index))
-            optimal_server.record_state(cpu_index, env.now, cpu_container)
-            cpu_container.put(event.weight)
-            # Print_recourse_metrics(cpu_container, "M_post_put") =========
+            if optimal_server is None:
+                optimal_server = temp_optimal_server
+                optimal_cpu_index = temp_cpu_index
+                optimal_cpu_container = temp_cpu_container
+            else:
+                if temp_cpu_container.capacity - temp_cpu_container.level - len(temp_cpu_container.put_queue) > optimal_cpu_container.capacity - optimal_cpu_container.level - len(optimal_cpu_container.put_queue):
+                    optimal_server = temp_optimal_server
+                    optimal_cpu_index = temp_cpu_index
+                    optimal_cpu_container = temp_cpu_container
 
-            # process by cpu unit
-            yield env.timeout(event.load_time) # processing takes one time step
-            # print(f'STEP {env.now} POST - {name}')
-            optimal_server.record_state(cpu_index, env.now, cpu_container)
+        print(optimal_server.server_name, "CPU:", str(optimal_cpu_index))
+        if optimal_server is not None and optimal_cpu_index is not None and optimal_cpu_container is not None:
 
-            cpu_container.get(event.weight)
-            # Print_recourse_metrics(cpu_container, "M_post_get") =========
+            optimal_server.record_state(optimal_cpu_index, env.now, optimal_cpu_container)
+            optimal_cpu_container.put(event.weight)
 
+            yield env.timeout(event.load_time)  # processing takes one time step
+            optimal_server.record_state(optimal_cpu_index, env.now, optimal_cpu_container)
+
+            optimal_cpu_container.get(event.weight)
         else:
-            raise InternalException("Optimal server could not be determined!")
+            raise InternalException("Simulation failed. Optimal server could not be determined!")
