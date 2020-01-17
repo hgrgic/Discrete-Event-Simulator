@@ -18,9 +18,7 @@ class Simulator(object):
         oc = OperationsController.get_instance()
 
         for event in self.workload:
-            #TODO: process event
             self.env.process(self.topology_controller.process_event(self.env, event))
-            # self.topology_controller.process_event(self.env, step_events, step)
 
         self.env.run()
 

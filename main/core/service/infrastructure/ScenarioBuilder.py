@@ -28,6 +28,7 @@ class ScenarioBuilder:
         env = simpy.Environment()
         return env
 
+    #TODO remove if not necessary
     def get_event_prototype(self, login_percentage):
         if random.uniform(0, 1) > login_percentage:
             return Event("login", 0.001, False, 0.5)  # login event prototype

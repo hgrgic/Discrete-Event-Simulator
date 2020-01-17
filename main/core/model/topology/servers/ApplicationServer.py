@@ -17,13 +17,9 @@ class ApplicationServer(Reportable):
         self.sim_env = sim_env
 
         self.cpu_list = []
-        self.cpu_data_lists = []  # TODO: replace with  Reportable
-
         self._generate_cpu(cpu_sizes)
 
-        #
 
-        # super().register_component(MEMORY_COMPONENT)
 
     def execute_event(self):
         return self.cpu_units, self.memory_units

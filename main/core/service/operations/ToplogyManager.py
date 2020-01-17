@@ -30,7 +30,6 @@ class TopologyController:
                     optimal_cpu_index = temp_cpu_index
                     optimal_cpu_container = temp_cpu_container
 
-        print(optimal_server.server_name, "CPU:", str(optimal_cpu_index))
         if optimal_server is not None and optimal_cpu_index is not None and optimal_cpu_container is not None:
 
             optimal_server.record_state(optimal_cpu_index, env.now, optimal_cpu_container)
