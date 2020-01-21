@@ -19,8 +19,6 @@ class ApplicationServer(Reportable):
         self.cpu_list = []
         self._generate_cpu(cpu_sizes)
 
-
-
     def execute_event(self):
         return self.cpu_units, self.memory_units
 
@@ -30,7 +28,7 @@ class ApplicationServer(Reportable):
     def _generate_cpu(self, cpu_sizes):
         for e, i in enumerate(cpu_sizes):
             self.cpu_list.append(simpy.resources.container.Container(self.sim_env, capacity=i, init=0))
-            super().register_component("C"+str(e))
+            super().register_component("C" + str(e))
 
     def get_optimal_cpu_index(self):
         if len(self.cpu_list) > 0:

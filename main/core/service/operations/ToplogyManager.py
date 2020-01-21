@@ -32,13 +32,13 @@ class TopologyController:
 
         if optimal_server is not None and optimal_cpu_index is not None and optimal_cpu_container is not None:
 
-            optimal_server.record_state(optimal_cpu_index, env.now, optimal_cpu_container)
             optimal_cpu_container.put(event.weight)
+            optimal_server.record_state(optimal_cpu_index, env.now, optimal_cpu_container, "IN", event.name)
 
             yield env.timeout(event.load_time)  # processing takes one time step
-            optimal_server.record_state(optimal_cpu_index, env.now, optimal_cpu_container)
 
             optimal_cpu_container.get(event.weight)
+            optimal_server.record_state(optimal_cpu_index, env.now, optimal_cpu_container, "OUT", event.name)
         else:
             raise InternalException("Simulation failed. Optimal server could not be determined!")
 
@@ -48,12 +48,16 @@ class TopologyController:
         server = self.topology.get('application-servers')[incident.target_server_index]
         cpu = server.get_cpu_container(incident.target_cpu_index)
 
-        server.record_state(incident.target_cpu_index, env.now, cpu, "OUT")
+        server.record_state(incident.target_cpu_index, env.now, cpu, "IN", incident.name)
 
-        cpu.put(cpu.capacity) 
+        cpu.put(cpu.capacity)
+        yield env.timeout(0.00000001)
+        server.record_state(incident.target_cpu_index, env.now, cpu, "IN", incident.name)
 
         yield env.timeout(incident.duration)
 
-        server.record_state(incident.target_cpu_index, env.now, cpu)
-
+        server.record_state(incident.target_cpu_index, env.now, cpu, "OUT", incident.name)
         cpu.get(cpu.capacity)
+        yield env.timeout(0.00000001)
+
+        server.record_state(incident.target_cpu_index, env.now, cpu, "OUT", incident.name)
