@@ -5,7 +5,8 @@ from main.core.service.operations.ToplogyManager import TopologyController
 class Simulator(object):
     def __init__(self, _env, _scenario, _topology_controller: TopologyController, name, description):
         self.env = _env
-        self.workload = _scenario
+        self.workload = _scenario['events']
+        self.incidents = _scenario['incidents']
         self.topology_controller = _topology_controller
         self.runtime_id = None
         self.name = name
@@ -19,6 +20,9 @@ class Simulator(object):
 
         for event in self.workload:
             self.env.process(self.topology_controller.process_event(self.env, event))
+
+        for incident in self.incidents:
+            self.env.process(self.topology_controller.process_anomaly(self.env, incident))
 
         self.env.run()
 

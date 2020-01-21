@@ -41,3 +41,19 @@ class TopologyController:
             optimal_cpu_container.get(event.weight)
         else:
             raise InternalException("Simulation failed. Optimal server could not be determined!")
+
+    def process_anomaly(self, env, incident):
+        yield env.timeout(incident.start_step)  # this yields a NEW event at its corresponding start step
+
+        server = self.topology.get('application-servers')[incident.target_server_index]
+        cpu = server.get_cpu_container(incident.target_cpu_index)
+
+        server.record_state(incident.target_cpu_index, env.now, cpu, "OUT")
+
+        cpu.put(cpu.capacity) 
+
+        yield env.timeout(incident.duration)
+
+        server.record_state(incident.target_cpu_index, env.now, cpu)
+
+        cpu.get(cpu.capacity)
