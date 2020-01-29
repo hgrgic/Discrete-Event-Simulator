@@ -38,7 +38,7 @@ class ReportWebController(Resource):
     def get(self):
         if request.args.get("runtime_id") is not None:
             # Open connection to database
-            ma = MongoAdapter(authenticate=True)
+            ma = MongoAdapter()
             ma.open_db_connection()
             collection = ma.get_collection("reports")
 
@@ -83,7 +83,7 @@ class ReportWebController(Resource):
     def delete(self):
         if request.args.get("runtime_id") is not None:
             # Open connection to db
-            ma = MongoAdapter(authenticate=True)
+            ma = MongoAdapter()
             ma.open_db_connection()
             collection = ma.get_collection("reports")
 

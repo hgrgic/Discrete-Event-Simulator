@@ -11,7 +11,7 @@ from main.core.service.infrastructure.ScenarioBuilder import ScenarioBuilder
 from main.core.service.operations.OperationsController import OperationsController
 from main.core.service.operations.ToplogyManager import TopologyController
 from main.core.service.infrastructure.TopologyBuilder import TopologyBuilder
-from main.core.service.simulation.Simulator import Simulator
+from main.core.service.operations.Simulator import Simulator
 from main.core.util.IdentityUtility import get_unique_id
 
 

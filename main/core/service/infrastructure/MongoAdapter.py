@@ -1,12 +1,11 @@
 from pymongo import MongoClient
 
-from main.core.model.exceptions.database.DatabaseAccessException import DatabaseAccessException
 from main.core.model.exceptions.database.DatabaseConfigurationException import DatabaseConfigurationException
 from main.core.service.infrastructure.ConfigurationConstants import MONGO_DB_HOST, MONGO_DB_USER, MONGO_DB_PASS, MONGO_DB_PORT, MONGO_DB_NAME
 
 
 class MongoAdapter:
-    def __init__(self, authenticate=False) -> None:
+    def __init__(self) -> None:
         self._client = None
 
         if all(v is not None for v in [MONGO_DB_HOST, MONGO_DB_PORT, MONGO_DB_NAME]):
@@ -16,13 +15,13 @@ class MongoAdapter:
         else:
             raise DatabaseConfigurationException("Necessary database access parameters have not been properly defined.")
 
-        self.authenticate = authenticate
-        if authenticate:
-            if MONGO_DB_USER is None or MONGO_DB_PASS is None:
-                raise DatabaseAccessException("Database credentials not defined, check env. variables MONGO_USER and MONGO_PASS")
-            else:
-                self.__username = MONGO_DB_USER
-                self.__password = MONGO_DB_PASS
+        if MONGO_DB_USER is None or MONGO_DB_PASS is None:
+            self.authenticate = False
+            print("MONGO_DB_USER and MONGO_DB_PASS not provided, assuming auth is off.")
+        else:
+            self.authenticate = True
+            self.__username = MONGO_DB_USER
+            self.__password = MONGO_DB_PASS
 
     def open_db_connection(self):
         if self._client is None:

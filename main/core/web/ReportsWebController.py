@@ -25,7 +25,7 @@ class ReportsWebController(Resource):
     def get(self):
         try:
             # Open connection to database
-            ma = MongoAdapter(authenticate=True)
+            ma = MongoAdapter()
             ma.open_db_connection()
             collection = ma.get_collection("reports")
 

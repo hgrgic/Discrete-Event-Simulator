@@ -1,4 +1,9 @@
 version: '3.3'
+networks:
+  des-web:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
 volumes:
   mongodb-storage:
@@ -11,21 +16,21 @@ services:
     volumes:
       - $PWD/app
     image: ing.des.test
+    networks:
+      - des-web
     environment:
-      - 'MONGO_USER=user'
-      - 'MONGO_PASS=ergSm@e&EB@2PmSYG!'
-      - 'MONGO_HOST=78.47.131.57'
+#      - 'MONGO_USER=user' #optional to use, needs to be setup on MongoDB as well accordingly
+#      - 'MONGO_PASS=some-password' #optional to use, needs to be setup on MongoDB as well accordingly
+      - 'MONGO_HOST=172.20.0.2'
       - 'MONGO_PORT=27017'
       - 'MONGO_DB_NAME=ing-des'
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
-    environment:
-      MONGO_DATA_DIR: '/data/db'
-      MONGO_LOG_DIR: '/dev/null'
-      MONGODB_USER: "user"
-      MONGODB_PASS: "ergSm@e&EB@2PmSYG!"
+    networks:
+      des-web:
+        ipv4_address: 172.20.0.2
     volumes:
       - mongodb-storage:/data/db
-    ports:
-      - 27017:27017
+    expose:
+      - '27017'

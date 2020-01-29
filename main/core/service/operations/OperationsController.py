@@ -5,9 +5,9 @@ import datetime
 from main.core.model.exceptions.internal.SingletonClassException import SingletonClassException
 from main.core.model.exceptions.request.NoSuchElementException import NoSuchElementException
 from main.core.model.simulation.SimulationReport import SimulationReport
-from main.core.service.infrastructure.ConfigurationConstants import REPORT_COLLECTION, REQUEST_AUTH
+from main.core.service.infrastructure.ConfigurationConstants import REPORT_COLLECTION
 from main.core.service.infrastructure.MongoAdapter import MongoAdapter
-from main.core.service.simulation.Simulator import Simulator
+from main.core.service.operations.Simulator import Simulator
 
 
 class OperationsController:
@@ -47,7 +47,7 @@ class OperationsController:
                 instance = self.__instance.__running_simulations[runtime_id]
                 finish_time = datetime.datetime.now()
 
-                mongo = MongoAdapter(REQUEST_AUTH)
+                mongo = MongoAdapter()
                 mongo.open_db_connection()
                 reports_collection = mongo.get_collection(REPORT_COLLECTION)
 

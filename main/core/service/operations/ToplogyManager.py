@@ -1,5 +1,4 @@
 from main.core.model.exceptions.InternalExceptions import InternalException
-from main.core.model.topology.servers.ApplicationServer import CPU_COMPONENT, MEMORY_COMPONENT
 
 
 class TopologyController:
@@ -48,16 +47,11 @@ class TopologyController:
         server = self.topology.get('application-servers')[incident.target_server_index]
         cpu = server.get_cpu_container(incident.target_cpu_index)
 
-        server.record_state(incident.target_cpu_index, env.now, cpu, "IN", incident.name)
-
         cpu.put(cpu.capacity)
-        yield env.timeout(0.00000001)
         server.record_state(incident.target_cpu_index, env.now, cpu, "IN", incident.name)
 
         yield env.timeout(incident.duration)
 
-        server.record_state(incident.target_cpu_index, env.now, cpu, "OUT", incident.name)
         cpu.get(cpu.capacity)
-        yield env.timeout(0.00000001)
 
         server.record_state(incident.target_cpu_index, env.now, cpu, "OUT", incident.name)
