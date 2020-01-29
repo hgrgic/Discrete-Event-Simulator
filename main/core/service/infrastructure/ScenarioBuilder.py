@@ -16,11 +16,11 @@ class ScenarioBuilder:
         self.incidents = []
 
     def instantiate_scenario(self, scenario):
-        intervals_day, load_times_day, names_day = generate_intervals_load_times_and_names(scenario["events_per_hour"],
+        if scenario["events_per_hour"] == scenario["distribution_per_hour"] == scenario["load_times_per_hour"]:
+            intervals_day, load_times_day, names_day = generate_intervals_load_times_and_names(scenario["events_per_hour"],
                                                                                            scenario["distribution_per_hour"],
                                                                                            scenario["load_times_per_hour"])
 
-        if len(intervals_day) == len(load_times_day) == len(names_day):
             for i in range(len(intervals_day)):
                 self.events.append(Event(intervals_day[i], load_times_day[i], names_day[i]))
 
@@ -32,7 +32,7 @@ class ScenarioBuilder:
 
             return {"events": self.events, "incidents": self.incidents}
         else:
-            raise BadRequestException("Lengths scenario components must match")
+            raise BadRequestException("Lengths of scenario components must match")
 
     def get_sim_environment(self):
         env = simpy.Environment()
