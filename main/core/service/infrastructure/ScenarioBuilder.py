@@ -16,7 +16,7 @@ class ScenarioBuilder:
         self.incidents = []
 
     def instantiate_scenario(self, scenario):
-        if scenario["events_per_hour"] == scenario["distribution_per_hour"] == scenario["load_times_per_hour"]:
+        if len(scenario["events_per_hour"]) == len(scenario["distribution_per_hour"]) == len(scenario["load_times_per_hour"]):
             intervals_day, load_times_day, names_day = generate_intervals_load_times_and_names(scenario["events_per_hour"],
                                                                                            scenario["distribution_per_hour"],
                                                                                            scenario["load_times_per_hour"])
