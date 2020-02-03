@@ -13,7 +13,7 @@ app = Flask(__name__)
 from main import core
 
 api = swagger.docs(Api(app), apiVersion='0.1',
-                   description='ING Discrete Event Simulator',
+                   description='Discrete Event Simulator',
                    api_spec_url='/docs',
                    basePath='http://localhost:8080')
 

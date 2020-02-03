@@ -1,9 +1,9 @@
 #!/bin/bash
-app="ing.des.test"
+app="des"
 
-docker stop ing.des.test
-docker rm ing.des.test
-docker rmi ing.des.test
+docker stop des
+docker rm des
+docker rmi des
 
 docker build -t ${app} .
 

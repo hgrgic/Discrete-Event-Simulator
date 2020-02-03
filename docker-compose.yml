@@ -9,13 +9,13 @@ volumes:
   mongodb-storage:
 
 services:
-  ing.des.test:
+  des:
     ports:
       - '8080:80'
-    container_name: ing.des.test
+    container_name: des
     volumes:
       - $PWD/app
-    image: ing.des.test
+    image: des
     networks:
       - des-web
     environment:
@@ -23,7 +23,7 @@ services:
 #      - 'MONGO_PASS=some-password' #optional to use, needs to be setup on MongoDB as well accordingly
       - 'MONGO_HOST=172.20.0.2'
       - 'MONGO_PORT=27017'
-      - 'MONGO_DB_NAME=ing-des'
+      - 'MONGO_DB_NAME=des'
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
